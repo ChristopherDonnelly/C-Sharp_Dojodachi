@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Dojodachi</title>
+    <link rel="stylesheet" href="~/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/style.css" />
+    <link href="https://fonts.googleapis.com/css?family=ABeeZee|Julius+Sans+One|Poiret+One|Righteous|Yeon+Sung" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+</head>
+<body>
+    <div class="mt-2">
+        <div class="row text-center">
+            <div class="col-3 m-0 p-0">
+                <span class="col-8 attribute_text">Fullness: </span>
+                <span id="fullness" class="col-3 p-0 attribute_val">0</span>
+            </div>
+            <div class="col-3 m-0 p-0">
+                <span class="col-8 attribute_text">Happiness: </span>
+                <span id="happiness" class="col-3 p-0 attribute_val">0</span>
+            </div>
+            <div class="col-3 m-0 p-0">
+                <span class="col-8 attribute_text">Meals: </span>
+                <span id="meals" class="col-3 p-0 attribute_val">0</span>
+            </div>
+            <div class="col-3 m-0 p-0">
+                <span class="col-8 attribute_text">Energy: </span>
+                <span id="energy" class="col-3 p-0 attribute_val">0</span>
+            </div>
+        </div>
+        <div class="row text-center">
+            <div class="col-12 my-2">
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">0%</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container form-control mt-1">
+        <div class="row p-3 text-center">
+            <div class="col-12 mt-2">
+                <img src="~/images/neutral_1.gif" alt="Happy" class="img-fluid">
+            </div>
+            <div class="col-12 mt-4">
+                <div class="alert alert-primary invisible" role="alert">You fed the Dojodachi. He loved the food and gained x fullness.</div>
+            </div>
+        </div>
+    </div>
+    <div class="row text-center">
+        <div class="col-12 my-4 alive_layer">
+            <button class="btn btn-primary col-md-2 col-sm-12 mb-2" type="button" id="feed">
+                <span>Feed</span> 
+                <i class="material-icons">restaurant</i>
+            </button>
+            <button class="btn btn-primary col-md-2 col-sm-12 mb-2" type="button" id="play">
+                <span>Play</span> 
+                <i class="material-icons">videogame_asset</i>
+            </button>
+            <button class="btn btn-primary col-md-2 col-sm-12 mb-2" type="button" id="work">
+                <span>Work</span> 
+                <i class="material-icons">location_city</i>
+            </button>
+            <button class="btn btn-primary col-md-2 col-sm-12 mb-2" type="button" id="sleep">
+                <span>Sleep</span> 
+                <i class="material-icons">airline_seat_individual_suite</i>
+            </button>
+        </div>
+        <div class="col-12 my-4 dead_layer d-none">
+            <button class="btn btn-primary col-md-2 col-sm-12 mb-2" type="button" id="replay" onclick="location.href='@Url.Action("index")'">
+                <span>Play Again</span> 
+                <i class="material-icons">refresh</i>
+            </button>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30=" crossorigin="anonymous"></script>
+    <script src="~/js/bootstrap.min.js" ></script>
+    <script src="~/js/Dojodachi.js" ></script>
+    <script>
+        let myDojodachi = new Dojodachi();
+
+        var dojodachiStatus = {
+            0: "neutral",
+            1: "happy",
+            2: "sad",
+            3: "mad",
+            4: "sleepy",
+            5: "sick",
+            6: "dead"
+        };
+
+        $(document).ready(function() {
+            updateSats();
+            $('#feed').on('click', function() {
+                feed();
+            });
+            $('#play').on('click', function() {
+                play();
+            });
+            $('#work').on('click', function() {
+                work();
+            });
+            $('#sleep').on('click', function() {
+                sleep();
+            });
+        });
+
+        function disableButtons(){
+            $('#feed').attr("disabled", "disabled");
+            $('#play').attr("disabled", "disabled");
+            $('#work').attr("disabled", "disabled");
+            $('#sleep').attr("disabled", "disabled");
+        }
+
+        function enableButtons(){
+            $('#feed').removeAttr("disabled");
+            $('#play').removeAttr("disabled");
+            $('#work').removeAttr("disabled");
+            $('#sleep').removeAttr("disabled");
+        }
+
+        function dead(){
+            $('.alive_layer').addClass('d-none');
+            $('.dead_layer').removeClass('d-none');
+            $('.alert').html("Your Dojodachi has died from neglect!<br>Click Play Again to start over.").removeClass("invisible");
+        }
+
+        function win(){
+            $('.alive_layer').addClass('d-none');
+            $('.dead_layer').removeClass('d-none');
+            $('.alert').html("Your Dojodachi has survived and you have won!<br>Click Play Again to start over.").removeClass("invisible");
+        }
+
+        function resetStatus(){
+            $('.alert').html("&nbsp;").addClass("invisible");
+            if(myDojodachi.fullness <= 0 || myDojodachi.happiness <= 0){
+                updateImage('./images/'+dojodachiStatus[6].toLowerCase()+'.gif');
+                dead();
+            }else if(myDojodachi.fullness <= 5 || myDojodachi.happiness <= 5){
+                updateImage('./images/'+dojodachiStatus[2].toLowerCase()+'.gif');
+            }else if(myDojodachi.fullness >= 100 && myDojodachi.happiness >= 100 && myDojodachi.energy >= 100){
+                updateImage('./images/win.gif');
+                win();
+            }else{
+                let num = Math.floor(Math.random() * 2) + 1;
+                updateImage('./images/'+dojodachiStatus[0].toLowerCase()+'_'+num+'.gif');
+            }
+            enableButtons();
+        }
+
+        function updateImage(newImage){
+            $('img').attr('src', newImage);
+        }
+
+        function updateSats(){
+            $('#fullness').html(myDojodachi.fullness);
+            $('#happiness').html(myDojodachi.happiness);
+            $('#meals').html(myDojodachi.meals);
+            $('#energy').html(myDojodachi.energy);
+            updateProgressBar();
+        }
+
+        function updateProgressBar(){
+            let fullness = (myDojodachi.fullness > 100)?100:myDojodachi.fullness;
+            let happiness = (myDojodachi.happiness > 100)?100:myDojodachi.happiness;
+            let energy = (myDojodachi.energy > 100)?100:myDojodachi.energy;
+            let val = Math.floor((fullness + happiness + energy) / 3);
+            $('.progress-bar').css('width', val+'%').attr('aria-valuenow', val).html(val+'%');
+        }
+
+        function updateDojodachi(type, data){
+            let num = "";
+            myDojodachi = data.dojodachi;
+            console.log(dojodachiStatus[myDojodachi.status])
+            $('.alert').html(data.message).removeClass("invisible");
+            if(type == "play") num = "_" + (Math.floor(Math.random() * 2) + 1);
+            updateSats();
+            disableButtons();
+            updateImage('./images/'+type+'_'+dojodachiStatus[myDojodachi.status]+num+'.gif');
+            setTimeout(function(){ resetStatus(); }, 3000);
+        }
+
+        function feed(){
+            if(myDojodachi.meals > 0){
+                $.ajax({
+                    headers: { 
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json' 
+                    },
+                    type: "POST",
+                    url: "/feed",
+                    dataType: "json",
+                    data: JSON.stringify(myDojodachi),
+                    success: function(data) {
+                        updateDojodachi('food', data);
+                    }
+                });
+            }else{
+                $('.alert').html("You do not have enough Meals to feed your Dojodachi.<br>Put your Dojodachi to Work to produce more.").removeClass("invisible");
+                setTimeout(function(){ resetStatus(); }, 2000);
+            }
+        }
+
+        function play(){
+            if(myDojodachi.energy >= 5){
+                $.ajax({
+                    headers: { 
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json' 
+                    },
+                    type: "POST",
+                    url: "/play",
+                    dataType: "json",
+                    data: JSON.stringify(myDojodachi),
+                    success: function(data) {
+                        updateDojodachi('play', data);
+                    }
+                });
+            }else{
+                $('.alert').html("Your Dojodachi does not have enough Energy to play at this time.<br>Have your Dojodachi take a nap to gain more.").removeClass("invisible");
+                setTimeout(function(){ resetStatus(); }, 2000);
+            }
+        }
+
+        function work(){
+            if(myDojodachi.energy >= 5){
+                $.ajax({
+                    headers: { 
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json' 
+                    },
+                    type: "POST",
+                    url: "/work",
+                    dataType: "json",
+                    data: JSON.stringify(myDojodachi),
+                    success: function(data) {
+                        updateDojodachi('work', data);
+                    }
+                });
+            }else{
+                $('.alert').html("Your Dojodachi does not have enough Energy to Work at this time.<br>Have your Dojodachi take a nap to gain more.").removeClass("invisible");
+                setTimeout(function(){ resetStatus(); }, 2000);
+            }
+        }
+
+        function sleep(){
+            $.ajax({
+                headers: { 
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json' 
+                },
+                type: "POST",
+                url: "/sleep",
+                dataType: "json",
+                data: JSON.stringify(myDojodachi),
+                success: function(data) {
+                    updateDojodachi('sleepy', data);
+                }
+            });
+        }
+
+    </script>
+</body>
+</html>

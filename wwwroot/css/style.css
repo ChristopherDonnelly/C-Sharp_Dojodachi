@@ -1,0 +1,34 @@
+.attribute_text {
+    font-size: 1.4em;
+}
+.attribute_val {
+    font-size: 1.8em;
+    color: red;
+}
+i.material-icons {
+    position: relative;
+    bottom: -0.3em;
+    line-height: 0.6em;
+}
+.badge.badge-light {
+    font-size: 0.7em;
+}
+
+.row {
+    margin-right: 0px;
+    margin-left: 0px;
+}
+
+.alert.alert-primary {
+    margin-bottom: 0px;
+}
+
+/* font-family: 'Yeon Sung', cursive;
+font-family: 'Poiret One', cursive;
+font-family: 'Righteous', cursive;
+font-family: 'ABeeZee', sans-serif;
+font-family: 'Julius Sans One', sans-serif; */
+
+* {
+    font-family: 'Yeon Sung', cursive;
+}
