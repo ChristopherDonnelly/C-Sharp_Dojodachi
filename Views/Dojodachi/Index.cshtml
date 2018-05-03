@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Dojodachi</title>
+    <title>Lil' Devil</title>
     <link rel="stylesheet" href="~/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/style.css" />
     <link href="https://fonts.googleapis.com/css?family=ABeeZee|Julius+Sans+One|Poiret+One|Righteous|Yeon+Sung" rel="stylesheet">
@@ -12,6 +12,11 @@
 </head>
 <body>
     <div class="mt-2">
+        <div class="row text-center">
+            <div class="col-12">
+                <h1>Lil' Devil</h1>
+            </div>
+        </div>
         <div class="row text-center">
             <div class="col-3 m-0 p-0">
                 <span class="col-8 attribute_text">Fullness: </span>
@@ -44,7 +49,7 @@
                 <img src="~/images/neutral_1.gif" alt="Happy" class="img-fluid">
             </div>
             <div class="col-12 mt-4">
-                <div class="alert alert-primary invisible" role="alert">You fed the Dojodachi. He loved the food and gained x fullness.</div>
+                <div class="alert alert-primary invisible" role="alert">You fed the Lil' Devil. He loved the food and gained x fullness.</div>
             </div>
         </div>
     </div>
@@ -124,13 +129,13 @@
         function dead(){
             $('.alive_layer').addClass('d-none');
             $('.dead_layer').removeClass('d-none');
-            $('.alert').html("Your Dojodachi has died from neglect!<br>Click Play Again to start over.").removeClass("invisible");
+            $('.alert').html("Your Lil' Devil has returned to the underworld due to neglect!<br>Click Play Again to start over.").removeClass("invisible");
         }
 
         function win(){
             $('.alive_layer').addClass('d-none');
             $('.dead_layer').removeClass('d-none');
-            $('.alert').html("Your Dojodachi has survived and you have won!<br>Click Play Again to start over.").removeClass("invisible");
+            $('.alert').html("Your Lil' Devil has survived and you have won!<br>Click Play Again to start over.").removeClass("invisible");
         }
 
         function resetStatus(){
