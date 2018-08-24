@@ -19,10 +19,7 @@ namespace Dojodachi_Project
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseKestrel()
-                .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseStartup<Startup>()
-                .UseIISIntegration()
                 .Build();
     }
 }
